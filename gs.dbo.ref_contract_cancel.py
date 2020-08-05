@@ -13,12 +13,6 @@ def GS_DBO_1():
     next_page = 'none'
     URL_n = 'https://ows.goszakup.gov.kz/v3/refs/ref_contract_cancel'
 
-# for checking new code
-#     r_n = requests.get(URL_n, headers=headers_1, verify=False).json()
-#     print(type(r_n['items'][0]['id']))
-#     print(type(r_n['items'][0]['name_kz']))
-#     print(r_n)
-
     while next_page != '':
         r_n = requests.get(URL_n, headers=headers_1, verify=False).json()
         next_page = r_n['next_page']
