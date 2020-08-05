@@ -13,12 +13,13 @@ def GS_DBO_1():
     next_page = 'none'
     URL_n = 'https://ows.goszakup.gov.kz/v3/refs/ref_contract_cancel'
 
+
     while next_page != '':
         r_n = requests.get(URL_n, headers=headers_1, verify=False).json()
+        print(r_n)
         next_page = r_n['next_page']
         item = r_n['items']
         for i in item:
-            print()
             query = 'insert into gs.dbo.ref_contract_cancel( item_id, item_name_ru , item_name_kz) values (?,?,?)'
             args = (i['id'], i['name_ru'], i['name_kz'])
             print('this line is done!')
