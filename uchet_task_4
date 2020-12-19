@@ -1,0 +1,47 @@
+import requests
+from bs4 import BeautifulSoup
+import re
+import pyodbc
+import xlrd
+
+conn = pyodbc.connect('Driver={SQL Server Native Client 11.0};'
+                      'Server=LAPTOP-QHTHN2FI\MSSQLSERVER01;'
+                      'Database=master;'
+                      'Trusted_Connection=yes;')
+cursor = conn.cursor()
+sett_1 = []
+
+loc = ('C:\\Users\\User\\Desktop\\bin_iin.xlsx')
+wb = xlrd.open_workbook(loc)
+sheet = wb.sheet_by_index(0)
+for i, k in enumerate (range(1,1001)):
+    ID=sheet.cell_value(i, 1)
+    URL_1 = 'https://pk.uchet.kz/p/search/?type=iin&iin=' + ID
+    print(k)
+#Parsing data from URLs
+    r_1 = requests.get(URL_1).text
+    soup_1 = BeautifulSoup(r_1, 'html.parser')
+    sett_1=soup_1.find_all('span', class_="person-ie-name")
+    if len(sett_1)!=0:
+        for tag_1 in sett_1:
+            tag_2= str(tag_1).replace('<span class="person-ie-name">', '').replace('</span>','')
+            if len(tag_2)!=0:
+                cursor.execute('insert into Uchet_01(bin_type, bin) values (?,?)', tag_2, ID)
+            else:
+                cursor.execute('insert into Uchet_01(bin_type, bin) values (?,?)', 'Not found', ID)
+
+    else:
+       cursor.execute('insert into Uchet_01(bin_type, bin) values (?,?)', 'Loading', ID)
+
+conn.commit()
+
+
+
+
+
+
+
+
+
+
+
